@@ -1,18 +1,55 @@
 
-const fetch = require('node-fetch')
+const fetch = require('node-fetch');
+
+console.log(check("https://ingsoft2-deblasiis-180024.herokuapp.com/count",{prova: "provatext"},{count: 5},200));
 
 function check(url, invocationParameters,  expectedResultData, expectedResultStatus) {
 
-    const checkResult = { // this is the object you need to set and return
+    var parametri = Object.keys(invocationParameters);
+    var urlQuery = "?";
+    for (var i = 0; i < parametri.length; i++) {
+        urlQuery += parametri[i] + "=" + invocationParameters[parametri[i]];
+        if(i < (parametri.length - 1)) {
+            urlQuery += "&"
+        }
+    }
+
+    return urlConnection(url, urlQuery, expectedResultData, expectedResultStatus);
+
+}
+
+function urlConnection(url, params, expData, expStatus) {
+
+    var checkResult = { // this is the object you need to set and return
         urlChecked: url,
         resultData: null,
         resultStatus: null,
         statusTestPassed: null,
         resultDataAsExpected: null
-    }
+    };
 
+    return fetch(url + params)
+        .then(function(response) {
+            var statusCheck = false;
+            if(response.status == expStatus) {
+                statusCheck = true;
+            }
+            checkResult.resultStatus = response.status;
+            checkResult.statusTestPassed = statusCheck;
 
+            return response.json();
+        })
+        .then(function(body) {
+            var dataCheck = false;
+            if(body == expData) {
+                dataCheck = true;
+            }
+            checkResult.resultData = body;
+            checkResult.resultDataAsExpected = dataCheck;
 
+            //console.log(checkResult);
+            return checkResult;
+        });
 }
 
 
@@ -27,4 +64,4 @@ function compareResults(expected, actual) {
     return true
 }
 
-module.exports = check
+module.exports = check;
