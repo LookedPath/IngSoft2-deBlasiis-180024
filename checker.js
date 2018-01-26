@@ -1,8 +1,6 @@
 
 const fetch = require('node-fetch');
 
-console.log(check("https://ingsoft2-deblasiis-180024.herokuapp.com/count",{prova: "provatext"},{count: 5},200));
-
 function check(url, invocationParameters,  expectedResultData, expectedResultStatus) {
 
     var parametri = Object.keys(invocationParameters);
